@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RECapp v0.2.9</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RECapp v0.3.0</title><style>
 :root{--bg:#f4f1ea;--paper:#fffdf8;--ink:#202522;--muted:#747974;--dark:#26352f;--line:#d8d2c7;--soft:#ebe7de;--accent:#9daf9f;--col:160px}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif}
 button,input,textarea,select{font:inherit}button{touch-action:manipulation}
@@ -11,7 +11,7 @@ main{padding:14px}.pipelineShell,.reminders{background:var(--paper);border:1px s
 .pipeline{min-width:calc(var(--col) * 17 + 90px)}
 .stageRow,.laneRow{display:grid;grid-template-columns:90px repeat(17,var(--col))}
 .corner,.laneName{position:sticky;left:0;z-index:4;background:var(--paper);border-right:1px solid var(--line)}
-.corner{border-bottom:1px solid var(--line)}
+.corner{border-bottom:1px solid var(--line);background:var(--soft);display:flex;align-items:center;justify-content:center;padding:8px;font-size:9px;font-weight:850;letter-spacing:.08em;text-align:center}
 .stageHead{min-height:68px;padding:8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:9px;font-weight:850;line-height:1.25;background:var(--soft)}
 .stageHead span{display:block;font-size:8px;color:var(--muted);margin-bottom:4px}
 .laneName{padding:16px 10px;font-size:10px;font-weight:900;letter-spacing:.09em}
@@ -30,12 +30,12 @@ main{padding:14px}.pipelineShell,.reminders{background:var(--paper);border:1px s
 .borrowerInfoBtn{width:100%;margin-top:12px;background:var(--soft);color:var(--ink);border:1px solid var(--line)}.infoBox{display:none;margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff}.infoBox.open{display:block}.systemNote{border-left-color:#6f7b74;background:#f7f7f4}.noteform{border-top:1px solid var(--line);padding-top:9px}.nrow{display:grid;grid-template-columns:110px 1fr;gap:7px}.noteDateDisplay{border:1px solid #d4cec2;border-radius:7px;padding:9px;background:#f3f0e9;font-size:10px;font-weight:800;display:flex;align-items:center}.nrow textarea{height:68px}.follow{display:flex;gap:7px;align-items:center;font-size:10px;margin-top:7px}.empty{font-size:10px;color:var(--muted)}
 @media(max-width:760px){:root{--col:145px}.brand small{max-width:230px}.workspace{height:97vh}.wbody{grid-template-columns:1fr;overflow:auto}.panel{overflow:visible}.stageRow,.laneRow{grid-template-columns:72px repeat(17,var(--col))}.pipeline{min-width:calc(var(--col) * 17 + 72px)}.corner,.laneName{width:72px}.laneName{padding:14px 7px;font-size:9px}}
 </style></head><body>
-<header><div class="brand">RECapp™ <small>Residential Ecosystem Capture of Application Processing and Procedures • v0.2.9</small></div><button id="addBorrowerBtn" class="btn white">+ ADD BORROWER</button></header>
+<header><div class="brand">RECapp™ <small>Residential Ecosystem Capture of Application Processing and Procedures • v0.3.0</small></div><button id="addBorrowerBtn" class="btn white">+ ADD BORROWER</button></header>
 <main>
 <section class="pipelineShell">
 <div class="sectionTitle">LOAN FLOW</div>
 <div class="pipelineScroll" id="pipelineScroll"><div class="pipeline">
-<div class="stageRow"><div class="corner"></div><div id="stageHeaders" style="display:contents"></div></div>
+<div class="stageRow"><div class="corner">LOAN TYPE</div><div id="stageHeaders" style="display:contents"></div></div>
 <div class="laneRow"><div class="laneName">PURCHASE</div><div id="purchaseGrid" style="display:contents"></div></div>
 <div class="laneRow"><div class="laneName">REFINANCE</div><div id="refinanceGrid" style="display:contents"></div></div>
 </div></div>
@@ -61,6 +61,10 @@ main{padding:14px}.pipelineShell,.reminders{background:var(--paper);border:1px s
 <div class="field"><label>Borrower last name</label><input id="editBorrowerLastName"></div>
 <div class="field"><label>Purchase / Refinance</label><select id="editTransactionType"><option value="purchase">Purchase</option><option value="refinance">Refinance</option></select></div>
 <div class="field"><label>Loan program / type</label><input id="editProgram" placeholder="Conventional, FHA, VA, USDA…"></div>
+<div class="field"><label>Borrower phone</label><input id="editBorrowerPhone" type="tel" placeholder="(703) 555-0123"></div>
+<div class="field"><label>Borrower email</label><input id="editBorrowerEmail" type="email" placeholder="borrower@example.com"></div>
+<div class="field"><label>Co-borrower phone</label><input id="editCoBorrowerPhone" type="tel" placeholder="(703) 555-0124"></div>
+<div class="field"><label>Co-borrower email</label><input id="editCoBorrowerEmail" type="email" placeholder="coborrower@example.com"></div>
 <button id="saveBorrowerInfo" class="btn">SAVE CHANGES</button>
 </div></section>
 <section class="panel notes"><h3>RUNNING FILE NOTES</h3><div id="notesLog" class="log"></div>
@@ -199,6 +203,10 @@ function populateBorrowerInfo(){
  el("editBorrowerLastName").value=active.last||"";
  el("editTransactionType").value=active.type||"purchase";
  el("editProgram").value=active.program||"";
+ el("editBorrowerPhone").value=active.borrowerPhone||"";
+ el("editBorrowerEmail").value=active.borrowerEmail||"";
+ el("editCoBorrowerPhone").value=active.coBorrowerPhone||"";
+ el("editCoBorrowerEmail").value=active.coBorrowerEmail||"";
 }
 function saveBorrowerInfo(){
  if(!active)return;
@@ -207,13 +215,21 @@ function saveBorrowerInfo(){
  const last=el("editBorrowerLastName").value.trim().toUpperCase();
  const type=el("editTransactionType").value;
  const program=el("editProgram").value.trim();
+ const borrowerPhone=el("editBorrowerPhone").value.trim();
+ const borrowerEmail=el("editBorrowerEmail").value.trim();
+ const coBorrowerPhone=el("editCoBorrowerPhone").value.trim();
+ const coBorrowerEmail=el("editCoBorrowerEmail").value.trim();
  if(!first||!last){alert("Borrower first and last name cannot be blank.");return}
  if(first!==(active.first||""))changes.push("Borrower first name: "+(active.first||"—")+" → "+first);
  if(last!==active.last)changes.push("Borrower last name: "+active.last+" → "+last);
  if(type!==active.type)changes.push("Transaction type: "+(active.type==="purchase"?"Purchase":"Refinance")+" → "+(type==="purchase"?"Purchase":"Refinance"));
  if(program!==active.program)changes.push("Loan program/type: "+(active.program||"—")+" → "+(program||"—"));
+ if(borrowerPhone!==(active.borrowerPhone||""))changes.push("Borrower phone: "+(active.borrowerPhone||"—")+" → "+(borrowerPhone||"—"));
+ if(borrowerEmail!==(active.borrowerEmail||""))changes.push("Borrower email: "+(active.borrowerEmail||"—")+" → "+(borrowerEmail||"—"));
+ if(coBorrowerPhone!==(active.coBorrowerPhone||""))changes.push("Co-borrower phone: "+(active.coBorrowerPhone||"—")+" → "+(coBorrowerPhone||"—"));
+ if(coBorrowerEmail!==(active.coBorrowerEmail||""))changes.push("Co-borrower email: "+(active.coBorrowerEmail||"—")+" → "+(coBorrowerEmail||"—"));
  if(!changes.length){el("borrowerInfoBox").classList.remove("open");return;}
- active.first=first;active.last=last;active.type=type;active.program=program;
+ active.first=first;active.last=last;active.type=type;active.program=program;active.borrowerPhone=borrowerPhone;active.borrowerEmail=borrowerEmail;active.coBorrowerPhone=coBorrowerPhone;active.coBorrowerEmail=coBorrowerEmail;
  active.notes=active.notes||[];
  active.notes.push({id:"n"+Date.now(),date:today(),text:"BORROWER INFO UPDATED\n"+changes.join("\n"),system:true,done:false});
  save();el("borrowerTitle").textContent=active.last;renderNotes();render();populateBorrowerInfo();el("borrowerInfoBox").classList.remove("open");
